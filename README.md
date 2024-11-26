@@ -1,6 +1,6 @@
-Dual-Path CNN-Stylized Hybrid Network for Boundary-Aware Segmentation and Angle of Progression Measurement in Intrapartum Ultrasound
 
-# CNN-Stylized Dual-Path CNN-Transformer Hybrid Model for Fetal Head and Pubic Symphysis Segmentation in Intrapartum Ultrasound Images
+
+# Dual-Path CNN-Stylized Hybrid Network for Boundary-Aware Segmentation and Angle of Progression Measurement in Intrapartum Ultrasound
 
 
 <img src="https://github.com/SakuraKong/Dual-Path-CNN-Stylized-Hybrid-Network/blob/master/fig2.jpg" alt="Medical Ultrasound Image Segmentation" width="600">
