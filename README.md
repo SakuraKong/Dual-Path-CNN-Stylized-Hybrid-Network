@@ -17,19 +17,19 @@ This repository presents a novel **CNN-stylized dual-path CNN-Transformer hybrid
 
 ---
 
-### 📋 **Features**
+### 📋 **Contribution**
 
-1. **Parallel CNN-Transformer Encoder:**  
+1. **Parallel CNN-Stylized Hybrid Encoder:**  
    - Combines the strengths of CNNs and Transformers without attention collapse.
-   - A custom feature interaction module ensures effective fusion of CNN and Transformer outputs.
+   - Leveraging CNN-style Transformers to prevent attention collapse.
 
 2. **Boundary Attention Residual Module (BARM):**  
    - Captures hidden boundary details from foreground and background.
    - Utilizes residual structures to refine boundary features progressively.
 
-3. **T2C:**  
+3. **Transformer-to-CNN Block (T2C):**  
    - Well fused dual path features.
-
+   - Use the features in CNN to adjust the characteristics of Transformer.
 
 ---
 
