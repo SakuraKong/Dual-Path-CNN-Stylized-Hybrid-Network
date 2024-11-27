@@ -1,14 +1,8 @@
 import sys
-sys.path.append('/home/zhensen/medical')
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-#from ResNet import resnet50
-#from networks.ResNet import resnet50
-from einops import rearrange, repeat
-from einops.layers.torch import Rearrange
-from math import log
-from networks.base import BaseNetwork
+from einops import rearrange
 import math
 import torch.utils.model_zoo as model_zoo
 
