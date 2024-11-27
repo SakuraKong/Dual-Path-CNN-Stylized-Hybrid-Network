@@ -605,41 +605,44 @@ class DCHN(nn.Module):
         self.attention2 = DualAttentionModule()
         self.attention3 = DualAttentionModule()
         self.attention4 = DualAttentionModule()
-
-        # Final segmentation prediction layers at different scales
         self.segmentation_head1 = nn.Conv2d(64, self.num_classes, kernel_size=1)
-        self.segmentation_head2 = nn.Conv2d(64, self.num_classes, kernel_size=1)
-        self.segmentation_head3 = nn.Conv2d(64, self.num_classes, kernel_size=1)
-        self.segmentation_head4 = nn.Conv2d(64, self.num_classes, kernel_size=1)
 
     def forward(self, input_tensor):
-        # Extract feature maps from ResNet backbone
+
         low_res_features, mid_res_features, high_res_features, deepest_features = self.backbone(input_tensor)
 
-        # Pass the first feature map through the multi-scale transformer
+
         transformed_features = self.multi_scale_transformer(low_res_features)
 
-        # Upsample the transformed features to match the size of the deepest feature map
+
         transformed_features = F.interpolate(transformed_features, size=deepest_features.shape[2:], mode='bilinear', align_corners=False)
-        # Apply dual attention mechanism for feature fusion
+
         refined_attention = self.T2C(deepest_features,transformed_features)
-        # Apply 1x1 convolutions to reduce the number of channels
+
         reduced_low_res = self.reduce_x1(low_res_features)
         reduced_mid_res = self.reduce_x2(mid_res_features)
         reduced_high_res = self.reduce_x3(high_res_features)
         reduced_deepest_res = self.reduce_x4(deepest_features)
 
-        # Further reduce the refined attention feature map
         refined_attention = self.reduce_x4(refined_attention)
 
-        # Apply dual attention to refine features across different resolutions
-        level4_output = self.attention4(reduced_deepest_res, refined_attention)
-        level3_output = self.attention3(reduced_high_res, level4_output)
-        level2_output = self.attention2(reduced_mid_res, level3_output)
-        level1_output = self.attention1(reduced_low_res, level2_output)
+
+        level4_res = self.res_conv4(reduced_deepest_res) if reduced_deepest_res.shape[1] != refined_attention.shape[
+            1] else reduced_deepest_res
+        level4_output = self.attention4(reduced_deepest_res, refined_attention) + level4_res
+        level3_res = self.res_conv3(reduced_high_res) if reduced_high_res.shape[1] != level4_output.shape[
+            1] else reduced_high_res
+        level3_output = self.attention3(reduced_high_res, level4_output) + level3_res
+        level2_res = self.res_conv2(reduced_mid_res) if reduced_mid_res.shape[1] != level3_output.shape[
+            1] else reduced_mid_res
+        level2_output = self.attention2(reduced_mid_res, level3_output) + level2_res
+
+
+        level1_res = self.res_conv1(reduced_low_res) if reduced_low_res.shape[1] != level2_output.shape[
+            1] else reduced_low_res
+        level1_output = self.attention1(reduced_low_res, level2_output) + level1_res
 
         output_at_level1 = self.segmentation_head1(level1_output)
         output_at_level1 = F.interpolate(output_at_level1, scale_factor=4, mode='bilinear', align_corners=False)
 
-        # Return the final segmentation output (most refined resolution)
         return output_at_level1
