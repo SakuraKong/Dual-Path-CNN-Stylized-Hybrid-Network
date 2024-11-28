@@ -47,4 +47,4 @@ This repository presents a novel **CNN-stylized dual-path CNN-Transformer hybrid
 - **Dataset B:** HC18: https://zenodo.org/record/1327317
 
 ---
-**⭐️ Star this repository if you find it useful!**
+**⭐️ Star this repository if you find it useful~**
